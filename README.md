@@ -6,7 +6,7 @@ This repository contains code for media analysis and processing.
 Dependencies
 ------------
 
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp): A command-line program to download videos from YouTube.com and a few more sites.
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp) is a command-line program to download videos from YouTube.com and a few more sites.
 - [ffmpeg](https://www.ffmpeg.org/) required by `yt-dlp` for post-processing tasks.
 
 Installation
@@ -54,7 +54,7 @@ use Invis1ble\MediaIntelligence\FactsExtractor\OpenAiFactsExtractor;
 use Invis1ble\MediaIntelligence\SpeechToText\OpenAiSpeechToTextTransformer;
 use Invis1ble\MediaIntelligence\VideoToFacts\Application;
 
-// Set here your own Open AI Token.
+// Set here your own OpenAI API Key.
 // Visit https://platform.openai.com/account/api-keys for more details.
 $openAiApiKey = '';
 
