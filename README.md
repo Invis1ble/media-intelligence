@@ -47,7 +47,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Emgag\Flysystem\Tempdir;
 use GuzzleHttp\Client;
 use Invis1ble\MediaIntelligence\AudioExtractor\YtDlpAudioExtractor;
 use Invis1ble\MediaIntelligence\FactsExtractor\OpenAiFactsExtractor;
@@ -57,6 +56,7 @@ use Invis1ble\MediaIntelligence\VideoToFacts\Application;
 // Set here your own OpenAI API Key.
 // Visit https://platform.openai.com/account/api-keys for more details.
 $openAiApiKey = '';
+$audioTargetDirectoryPath = sys_get_temp_dir();
 
 $client = new Client();
 
@@ -64,7 +64,7 @@ $application = new Application(
     audioExtractor: new YtDlpAudioExtractor(),
     speechToTextTransformer: new OpenAiSpeechToTextTransformer($client, $openAiApiKey),
     factsExtractor: new OpenAiFactsExtractor($client, $openAiApiKey),
-    audioTargetDirectory: new SplFileInfo((new Tempdir())->getPath()),
+    audioTargetDirectory: new SplFileInfo($audioTargetDirectoryPath),
 );
 
 
