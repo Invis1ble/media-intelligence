@@ -13,7 +13,7 @@ class YtDlpAudioExtractor extends YoutubeDlAudioExtractor
         AudioFormat $format = AudioFormat::Mp3,
         string $command = 'yt-dlp',
         $audioOnly = false,
-        public ?UriInterface $proxy = null,
+        ?UriInterface $proxy = null,
     ) {
         parent::__construct($format, $command, $audioOnly, $proxy);
     }
