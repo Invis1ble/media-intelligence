@@ -1,0 +1,37 @@
+{
+    "name": "invis1ble/media-intelligence",
+    "type": "library",
+    "description": "A library for processing and analyzing media content, providing tools for audio, video, and text analysis.",
+    "keywords": [
+        "gpt",
+        "youtube",
+        "media",
+        "analysis",
+        "audio",
+        "video",
+        "text",
+        "processing",
+        "intelligence",
+        "whisper",
+        "davinci",
+        "openai"
+    ],
+    "require": {
+        "php": ">=8.2",
+        "emgag/flysystem-tempdir": "^3.0",
+        "guzzlehttp/guzzle": "^7.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Invis1ble",
+            "email": "Invis1ble@users.noreply.github.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Invis1ble\\MediaIntelligence\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
