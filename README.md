@@ -69,9 +69,12 @@ $application = new Application(
 
 
 // Usage: extract facts from the video
-$facts = $application->run('https://www.youtube.com/shorts/j_TLyMPGDKk'); // array with extracted facts from the video
+$facts = $application->run('https://www.youtube.com/watch?v=VjjqRJS7gHY'); // array with extracted facts from the video
 ```
 
+Output of the above code:
+
+![VideoToFacts Application output](https://user-images.githubusercontent.com/1710944/222926850-87526e12-0231-4094-b869-c7758ebecb03.png)
 
 License
 -------
