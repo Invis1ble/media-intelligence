@@ -3,11 +3,15 @@ Media Intelligence
 
 This repository contains code for media analysis and processing.
 
+
 Dependencies
 ------------
 
+In order to use this package you need to install the following utilities:
+
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) is a command-line program to download videos from YouTube.com and a few more sites.
 - [ffmpeg](https://www.ffmpeg.org/) required by `yt-dlp` for post-processing tasks.
+
 
 Installation
 ------------
@@ -34,6 +38,7 @@ After adding the above line, run the following command to install the package:
 ```bash
 composer install
 ```
+
 
 Usage
 -----
@@ -75,6 +80,15 @@ $facts = $application->run('https://www.youtube.com/watch?v=VjjqRJS7gHY'); // ar
 Output of the above code:
 
 ![VideoToFacts Application output](https://user-images.githubusercontent.com/1710944/222926850-87526e12-0231-4094-b869-c7758ebecb03.png)
+
+
+Known issues and limitations
+----------------------------
+- Logs are written directly to `stdout`. I'm currently working on integrating a logger.
+- At the moment, only relatively short videos (no more than 10 minutes) are supported. Work is in progress on this.
+
+Stay tuned!
+
 
 License
 -------
