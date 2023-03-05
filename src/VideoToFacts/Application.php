@@ -20,7 +20,10 @@ final readonly class Application
     ) {
     }
 
-    public function run(string $sourceUrl): int
+    /**
+     * @return iterable<string>
+     */
+    public function run(string $sourceUrl): iterable
     {
         $this->info("Extracting audio from source $sourceUrl");
 
@@ -42,7 +45,7 @@ final readonly class Application
             echo "- $fact\n";
         }
 
-        return 0;
+        return $facts;
     }
 
     private function info(string $message): void
