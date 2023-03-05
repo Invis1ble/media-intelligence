@@ -28,7 +28,7 @@ or just add it as a dependency in your `composer.json` file:
 
 {
     "require": {
-        "invis1ble/media-intelligence": "^0.1"
+        "invis1ble/media-intelligence": "^0.2"
     }
 }
 ```
@@ -75,7 +75,7 @@ $application = new Application(
 
 // Usage: extract facts from the video
 $facts = $application->run('https://www.youtube.com/watch?v=VjjqRJS7gHY');
-/** @var iterable<string> $facts list with extracted facts */
+/** @var iterable<string> $facts List of the extracted facts */
 ```
 
 Output of the above code:
