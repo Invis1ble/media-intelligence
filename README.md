@@ -74,7 +74,8 @@ $application = new Application(
 
 
 // Usage: extract facts from the video
-$facts = $application->run('https://www.youtube.com/watch?v=VjjqRJS7gHY'); // array with extracted facts from the video
+$facts = $application->run('https://www.youtube.com/watch?v=VjjqRJS7gHY');
+/** @var iterable<string> $facts list with extracted facts */
 ```
 
 Output of the above code:
