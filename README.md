@@ -28,7 +28,7 @@ or just add it as a dependency in your `composer.json` file:
 
 {
     "require": {
-        "invis1ble/media-intelligence": "^0.2"
+        "invis1ble/media-intelligence": "^0.3"
     }
 }
 ```
@@ -130,7 +130,6 @@ $application = new Application(
 
 Known issues and limitations
 ----------------------------
-- Logs are written directly to `stdout`. I'm currently working on integrating a logger.
 - At the moment, only relatively short videos (no more than 10 minutes) are supported. Work is in progress on this.
 
 Stay tuned!
