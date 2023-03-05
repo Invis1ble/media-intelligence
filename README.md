@@ -28,7 +28,7 @@ or just add it as a dependency in your `composer.json` file:
 
 {
     "require": {
-        "invis1ble/media-intelligence": "^0.2"
+        "invis1ble/media-intelligence": "^0.3"
     }
 }
 ```
@@ -83,9 +83,53 @@ Output of the above code:
 ![VideoToFacts Application output](https://user-images.githubusercontent.com/1710944/222926850-87526e12-0231-4094-b869-c7758ebecb03.png)
 
 
+### Logging setup
+
+To set up logging, you need to set a PSR-3-compatible logger for the services that you want to log.
+[Monolog](https://github.com/Seldaek/monolog) is recommended as implementation.
+
+```php
+
+// ...
+
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use Monolog\Logger;
+
+// ...
+
+$logger = new Logger(
+    name: 'video_to_facts_logger',
+    handlers: [
+        // write all staff to the file
+        new StreamHandler(__DIR__ . '/../logs/video_to_facts.log', Level::Debug),
+        // write info and higher to console
+        new StreamHandler(STDOUT, Level::Info),
+    ],
+);
+
+$audioExtractor = new YtDlpAudioExtractor();
+$audioExtractor->setLogger($logger);
+
+$speechToTextTransformer = new OpenAiSpeechToTextTransformer($client, $openAiApiKey);
+$speechToTextTransformer->setLogger($logger);
+
+$factsExtractor = new OpenAiFactsExtractor($client, $openAiApiKey);
+$factsExtractor->setLogger($logger);
+
+$application = new Application(
+    audioExtractor: $audioExtractor,
+    speechToTextTransformer: $speechToTextTransformer,
+    factsExtractor: $factsExtractor,
+    audioTargetDirectory: new SplFileInfo($audioTargetDirectoryPath),
+);
+
+```
+
+
+
 Known issues and limitations
 ----------------------------
-- Logs are written directly to `stdout`. I'm currently working on integrating a logger.
 - At the moment, only relatively short videos (no more than 10 minutes) are supported. Work is in progress on this.
 
 Stay tuned!

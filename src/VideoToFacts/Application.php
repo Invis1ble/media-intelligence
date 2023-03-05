@@ -25,33 +25,10 @@ final readonly class Application
      */
     public function run(string $sourceUrl): iterable
     {
-        $this->info("Extracting audio from source $sourceUrl");
-
         $audio = $this->audioExtractor->extract(Utils::uriFor($sourceUrl), $this->audioTargetDirectory);
-
-        $this->info("Audio saved in \"{$audio->getPathname()}\"");
-        $this->info('Transforming extracted audio to the text');
-
         $text = $this->speechToTextTransformer->transform($audio);
-
-        $this->info('Extracting facts from text');
-        echo "$text\n";
-
         $facts = $this->factsExtractor->extract($text);
 
-        $this->info('Extracted facts');
-
-        foreach ($facts as $fact) {
-            echo "- $fact\n";
-        }
-
         return $facts;
-    }
-
-    private function info(string $message): void
-    {
-        $date = date('d.m.Y H:i:s.U');
-
-        echo "[$date - $message]\n";
     }
 }
