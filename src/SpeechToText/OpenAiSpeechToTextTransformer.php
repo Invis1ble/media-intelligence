@@ -8,18 +8,24 @@ use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use SplFileInfo;
 
-readonly class OpenAiSpeechToTextTransformer implements SpeechToTextTransformer
+class OpenAiSpeechToTextTransformer implements SpeechToTextTransformer, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     public function __construct(
-        private ClientInterface $client,
-        private string $authToken,
+        private readonly ClientInterface $client,
+        public string $authToken,
     ) {
     }
 
     public function transform(SplFileInfo | StreamInterface $speech): string
     {
+        $this->logger?->info('Transforming audio to the text');
+
         if ($speech instanceof SplFileInfo) {
             $speech = Utils::streamFor($speech->openFile('r'));
         }
@@ -48,6 +54,10 @@ readonly class OpenAiSpeechToTextTransformer implements SpeechToTextTransformer
             ],
         );
 
-        return (string)$response->getBody();
+        $text = (string)$response->getBody();
+
+        $this->logger?->debug('Text: {text}', ['text' => $text]);
+
+        return $text;
     }
 }
