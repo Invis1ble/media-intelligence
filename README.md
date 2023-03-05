@@ -46,7 +46,7 @@ Usage
 To use most of the tools you need to set [OpenAI API Key](https://platform.openai.com/account/api-keys)
 
 ```php
-<?php
+<?php // ./public/index.php
 
 declare(strict_types=1);
 
