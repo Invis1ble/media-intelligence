@@ -24,7 +24,7 @@ class OpenAiChunkingFactsExtractor implements FactsExtractor, LoggerAwareInterfa
 
         $textLength = mb_strlen($text);
         $this->logger?->debug('Text length before chunking: {length} chars', ['length' => $textLength]);
-        $this->logger?->debug('Chunks number: {chunks_number}', ['chunks_number' => count($chunks)]);
+        $this->logger?->info('Chunks number: {chunks_number}', ['chunks_number' => count($chunks)]);
 
         $facts = [];
 
