@@ -54,8 +54,12 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use GuzzleHttp\Client;
 use Invis1ble\MediaIntelligence\AudioExtractor\YtDlpAudioExtractor;
+use Invis1ble\MediaIntelligence\FactsExtractor\OpenAiChunkingFactsExtractor;
 use Invis1ble\MediaIntelligence\FactsExtractor\OpenAiFactsExtractor;
+use Invis1ble\MediaIntelligence\FactsExtractor\SimpleOpenAiTokenCounter;
 use Invis1ble\MediaIntelligence\SpeechToText\OpenAiSpeechToTextTransformer;
+use Invis1ble\MediaIntelligence\Tokenizer\ChunkTokenizer;
+use Invis1ble\MediaIntelligence\Tokenizer\SentenceTokenizer;
 use Invis1ble\MediaIntelligence\VideoToFacts\Application;
 
 // Set here your own OpenAI API Key.
@@ -82,6 +86,11 @@ $application = new Application(
 // Usage: extract facts from the video
 $facts = $application->run('https://www.youtube.com/watch?v=1sRLDDIRL4U');
 /** @var iterable<string> $facts List of the extracted facts */
+
+foreach ($facts as $fact) {
+    echo "- $fact\n";
+}
+
 ```
 
 
