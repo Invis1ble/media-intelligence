@@ -88,10 +88,10 @@ class OpenAiFactsExtractor implements FactsExtractor, LoggerAwareInterface
 
         $this->logger?->debug('Facts length: {length} chars', ['length' => $factsLength]);
 
-        $compression = round($factsLength / $textLength * 100, 2);
+        $factsPercentage = round($factsLength / $textLength * 100, 2);
 
         $this->logger?->info('Compression: {compression}% ({facts_length} / {text_length})', [
-            'compression' => round(100 - $compression, 2),
+            'compression' => round(100 - $factsPercentage, 2),
             'facts_length' => $factsLength,
             'text_length' => $textLength,
         ]);
