@@ -70,15 +70,13 @@ $audioTargetDirectoryPath = sys_get_temp_dir();
 $client = new Client();
 $tokenCounter = new SimpleOpenAiTokenCounter();
 
-$chunkingFactsExtractor = new OpenAiChunkingFactsExtractor(
-    new OpenAiFactsExtractor($client, $tokenCounter, $openAiApiKey),
-    new ChunkTokenizer(new SentenceTokenizer(), $tokenCounter->tokenNumberToSizeInBytes(2048))
-);
-
 $application = new Application(
     audioExtractor: new YtDlpAudioExtractor(),
     speechToTextTransformer: new OpenAiSpeechToTextTransformer($client, $openAiApiKey),
-    factsExtractor: $chunkingFactsExtractor,
+    factsExtractor: new OpenAiChunkingFactsExtractor(
+        new OpenAiFactsExtractor($client, $tokenCounter, $openAiApiKey),
+        new ChunkTokenizer(new SentenceTokenizer(), $tokenCounter->tokensNumberToSizeInBytes(2048)),
+    ),
     audioTargetDirectory: new SplFileInfo($audioTargetDirectoryPath),
 );
 
@@ -132,7 +130,7 @@ $factsExtractor->setLogger($logger);
 $sentenceTokenizer = new SentenceTokenizer();
 $sentenceTokenizer->setLogger($logger);
 
-$chunkTokenizer = new ChunkTokenizer($sentenceTokenizer, $tokenCounter->tokenNumberToSizeInBytes(2048));
+$chunkTokenizer = new ChunkTokenizer($sentenceTokenizer, $tokenCounter->tokensNumberToSizeInBytes(2048));
 $chunkTokenizer->setLogger($logger);
 
 $chunkingFactsExtractor = new OpenAiChunkingFactsExtractor($factsExtractor, $chunkTokenizer);

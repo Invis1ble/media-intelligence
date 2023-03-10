@@ -8,5 +8,5 @@ interface OpenAiTokenCounter
 {
     public function count(string $text): int;
 
-    public function tokenNumberToSizeInBytes(int $tokenNumber): int;
+    public function tokensNumberToSizeInBytes(int $tokensNumber): int;
 }
