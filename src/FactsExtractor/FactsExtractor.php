@@ -9,5 +9,5 @@ interface FactsExtractor
     /**
      * @return iterable<string>
      */
-    public function extract(string $text): iterable;
+    public function extract(string $text, ?string $targetLanguage = null): iterable;
 }

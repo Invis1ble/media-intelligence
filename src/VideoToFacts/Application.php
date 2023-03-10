@@ -23,11 +23,11 @@ final readonly class Application
     /**
      * @return iterable<string>
      */
-    public function run(string $sourceUrl): iterable
+    public function run(string $sourceUrl, ?string $targetLanguage = null): iterable
     {
         $audio = $this->audioExtractor->extract(Utils::uriFor($sourceUrl), $this->audioTargetDirectory);
         $text = $this->speechToTextTransformer->transform($audio);
-        $facts = $this->factsExtractor->extract($text);
+        $facts = $this->factsExtractor->extract($text, $targetLanguage);
 
         return $facts;
     }
