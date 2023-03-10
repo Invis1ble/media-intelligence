@@ -28,7 +28,7 @@ or just add it as a dependency in your `composer.json` file:
 
 {
     "require": {
-        "invis1ble/media-intelligence": "^0.3"
+        "invis1ble/media-intelligence": "^1.0"
     }
 }
 ```
