@@ -72,7 +72,7 @@ $tokenCounter = new SimpleOpenAiTokenCounter();
 
 $chunkingFactsExtractor = new OpenAiChunkingFactsExtractor(
     new OpenAiFactsExtractor($client, $tokenCounter, $openAiApiKey),
-    new ChunkTokenizer(new SentenceTokenizer(), $tokenCounter->tokenNumberToSizeInBytes(2048))
+    new ChunkTokenizer(new SentenceTokenizer(), $tokenCounter->tokensNumberToSizeInBytes(2048))
 );
 
 $application = new Application(
@@ -132,7 +132,7 @@ $factsExtractor->setLogger($logger);
 $sentenceTokenizer = new SentenceTokenizer();
 $sentenceTokenizer->setLogger($logger);
 
-$chunkTokenizer = new ChunkTokenizer($sentenceTokenizer, $tokenCounter->tokenNumberToSizeInBytes(2048));
+$chunkTokenizer = new ChunkTokenizer($sentenceTokenizer, $tokenCounter->tokensNumberToSizeInBytes(2048));
 $chunkTokenizer->setLogger($logger);
 
 $chunkingFactsExtractor = new OpenAiChunkingFactsExtractor($factsExtractor, $chunkTokenizer);

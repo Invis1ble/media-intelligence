@@ -15,8 +15,8 @@ readonly class SimpleOpenAiTokenCounter implements OpenAiTokenCounter
         return (int)ceil(strlen($text) / $this->tokenSizeInBytes);
     }
 
-    public function tokenNumberToSizeInBytes(int $tokenNumber): int
+    public function tokensNumberToSizeInBytes(int $tokensNumber): int
     {
-        return (int)(ceil($this->tokenSizeInBytes * $tokenNumber));
+        return (int)(ceil($this->tokenSizeInBytes * $tokensNumber));
     }
 }
