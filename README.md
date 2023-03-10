@@ -64,23 +64,25 @@ $openAiApiKey = '';
 $audioTargetDirectoryPath = sys_get_temp_dir();
 
 $client = new Client();
+$tokenCounter = new SimpleOpenAiTokenCounter();
+
+$chunkingFactsExtractor = new OpenAiChunkingFactsExtractor(
+    new OpenAiFactsExtractor($client, $tokenCounter, $openAiApiKey),
+    new ChunkTokenizer(new SentenceTokenizer(), $tokenCounter->tokenNumberToSizeInBytes(2048))
+);
 
 $application = new Application(
     audioExtractor: new YtDlpAudioExtractor(),
     speechToTextTransformer: new OpenAiSpeechToTextTransformer($client, $openAiApiKey),
-    factsExtractor: new OpenAiFactsExtractor($client, $openAiApiKey),
+    factsExtractor: $chunkingFactsExtractor,
     audioTargetDirectory: new SplFileInfo($audioTargetDirectoryPath),
 );
 
 
 // Usage: extract facts from the video
-$facts = $application->run('https://www.youtube.com/watch?v=VjjqRJS7gHY');
+$facts = $application->run('https://www.youtube.com/watch?v=1sRLDDIRL4U');
 /** @var iterable<string> $facts List of the extracted facts */
 ```
-
-Output of the above code:
-
-![VideoToFacts Application output](https://user-images.githubusercontent.com/1710944/222926850-87526e12-0231-4094-b869-c7758ebecb03.png)
 
 
 ### Logging setup
@@ -114,23 +116,47 @@ $audioExtractor->setLogger($logger);
 $speechToTextTransformer = new OpenAiSpeechToTextTransformer($client, $openAiApiKey);
 $speechToTextTransformer->setLogger($logger);
 
-$factsExtractor = new OpenAiFactsExtractor($client, $openAiApiKey);
+$tokenCounter = new SimpleOpenAiTokenCounter();
+$factsExtractor = new OpenAiFactsExtractor($client, $tokenCounter, $openAiApiKey);
 $factsExtractor->setLogger($logger);
+
+$sentenceTokenizer = new SentenceTokenizer();
+$sentenceTokenizer->setLogger($logger);
+
+$chunkTokenizer = new ChunkTokenizer($sentenceTokenizer, $tokenCounter->tokenNumberToSizeInBytes(2048));
+$chunkTokenizer->setLogger($logger);
+
+$chunkingFactsExtractor = new OpenAiChunkingFactsExtractor($factsExtractor, $chunkTokenizer);
+$chunkingFactsExtractor->setLogger($logger);
 
 $application = new Application(
     audioExtractor: $audioExtractor,
     speechToTextTransformer: $speechToTextTransformer,
-    factsExtractor: $factsExtractor,
+    factsExtractor: $chunkingFactsExtractor,
     audioTargetDirectory: new SplFileInfo($audioTargetDirectoryPath),
 );
 
 ```
 
+Output of the above code:
+
+![VideoToFacts Application output](https://user-images.githubusercontent.com/1710944/224415770-a28c6822-f55b-49d7-a5f6-3c95e79c583f.png)
+
+
+### Translation
+
+You can translate the facts to many languages, just pass the language name to the FactsExtractor through application:
+
+```php
+$application->run('https://www.youtube.com/watch?v=1sRLDDIRL4U', 'Ukrainian');
+```
 
 
 Known issues and limitations
 ----------------------------
-- At the moment, only relatively short videos (no more than 10 minutes) are supported. Work is in progress on this.
+- At the moment, we are forced to split long videos into shorter segments due to OpenAI API limitations, which reduces
+the efficiency and accuracy of content analysis. If you have any suggestions on how to solve this problem,
+please do not hesitate to write about it in the Issues, and I will gladly consider your idea.
 
 Stay tuned!
 

@@ -27,7 +27,7 @@ class YoutubeDlAudioExtractor implements AudioExtractor, LoggerAwareInterface
 
     public function extract(UriInterface $source, ?SplFileInfo $targetDirectory = null): SplFileInfo
     {
-        $this->logger?->info('Extracting audio from source {source}', ['source' => $source]);
+        $this->logger?->info('Extracting audio from source {url}', ['url' => (string)$source]);
 
         $command = $this->buildCommand($source, $targetDirectory);
         $this->output = shell_exec($command);
@@ -38,12 +38,9 @@ class YoutubeDlAudioExtractor implements AudioExtractor, LoggerAwareInterface
             throw new UnexpectedValueException("Unexpected error occurred during command \"$command\" execution.");
         }
 
-        $pathname = preg_replace('#\n$#', '', $this->output);
-        $this->logger?->debug('Pathname: {pathname}', ['pathname' => $pathname]);
+        $file = new SplFileInfo(preg_replace('#\n$#', '', $this->output));
 
-        $file = new SplFileInfo($pathname);
-
-        $this->logger?->info('Audio saved to {pathname}', ['pathname' => $file->getPathname()]);
+        $this->logger?->debug('Audio saved to {pathname}', ['pathname' => $file->getPathname()]);
 
         return $file;
     }
