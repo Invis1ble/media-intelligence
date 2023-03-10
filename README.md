@@ -70,15 +70,13 @@ $audioTargetDirectoryPath = sys_get_temp_dir();
 $client = new Client();
 $tokenCounter = new SimpleOpenAiTokenCounter();
 
-$chunkingFactsExtractor = new OpenAiChunkingFactsExtractor(
-    new OpenAiFactsExtractor($client, $tokenCounter, $openAiApiKey),
-    new ChunkTokenizer(new SentenceTokenizer(), $tokenCounter->tokensNumberToSizeInBytes(2048))
-);
-
 $application = new Application(
     audioExtractor: new YtDlpAudioExtractor(),
     speechToTextTransformer: new OpenAiSpeechToTextTransformer($client, $openAiApiKey),
-    factsExtractor: $chunkingFactsExtractor,
+    factsExtractor: new OpenAiChunkingFactsExtractor(
+        new OpenAiFactsExtractor($client, $tokenCounter, $openAiApiKey),
+        new ChunkTokenizer(new SentenceTokenizer(), $tokenCounter->tokensNumberToSizeInBytes(2048)),
+    ),
     audioTargetDirectory: new SplFileInfo($audioTargetDirectoryPath),
 );
 
