@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Invis1ble\MediaIntelligence\FactsExtractor;
 
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\RequestOptions;
 use Psr\Http\Client\ClientInterface;
-use Psr\Http\Client\RequestExceptionInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -19,13 +19,16 @@ class OpenAiFactsExtractor implements FactsExtractor, LoggerAwareInterface
 
     public function __construct(
         private readonly ClientInterface $client,
+        private readonly RequestFactoryInterface $requestFactory,
+        private readonly UriFactoryInterface $uriFactory,
+        private readonly StreamFactoryInterface $streamFactory,
         private readonly OpenAiTokenCounter $tokenCounter,
-        public string $authToken,
+        public string $apiKey,
     ) {
     }
 
     /**
-     * @throws RequestExceptionInterface
+     * {@inheritdoc}
      */
     public function extract(string $text, ?string $targetLanguage = null): iterable
     {
@@ -45,32 +48,23 @@ class OpenAiFactsExtractor implements FactsExtractor, LoggerAwareInterface
 
         $this->logger?->debug('Request max_tokens: {max_tokens}', ['max_tokens' => $maxTokens]);
 
-        try {
-            $response = $this->client->post(
-                uri: 'https://api.openai.com/v1/completions',
-                options: [
-                    RequestOptions::HEADERS => [
-                        'Authorization' => "Bearer $this->authToken",
-                    ],
-                    RequestOptions::JSON => [
-                        'model' => 'text-davinci-003',
-                        'prompt' => $prompt,
-                        'temperature' => 0,
-                        'max_tokens' => $maxTokens,
-                    ],
-                ],
-            );
-        } catch (RequestException $exception) {
-            $this->logger?->error('Error occurred during completion request: {error}', [
-                'response' => (string)$exception->getResponse()->getBody(),
-                'error' => $exception->getMessage(),
-                'trace' => $exception->getTrace(),
-            ]);
+        $body = $this->streamFactory->createStream(json_encode([
+            'model' => 'text-davinci-003',
+            'prompt' => $prompt,
+            'temperature' => 0,
+            'max_tokens' => $maxTokens,
+        ]));
 
-            throw $exception;
-        }
+        $request = $this->requestFactory->createRequest(
+            'POST',
+            $this->uriFactory->createUri('https://api.openai.com/v1/completions'),
+        )
+            ->withHeader('Authorization', "Bearer $this->apiKey")
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody($body);
 
-        $body = (string)$response->getBody();
+        $body = (string)$this->client->sendRequest($request)
+            ->getBody();
 
         $this->logger?->debug('Response body: {body}', ['body' => $body]);
 

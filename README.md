@@ -1,7 +1,7 @@
 Media Intelligence
 ==================
 
-This repository contains code for media analysis and processing.
+This repository contains PSR-compatible code for media analysis and processing.
 
 
 Dependencies
@@ -28,7 +28,7 @@ or just add it as a dependency in your `composer.json` file:
 
 {
     "require": {
-        "invis1ble/media-intelligence": "^1.0"
+        "invis1ble/media-intelligence": "^2.0"
     }
 }
 ```
@@ -52,14 +52,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use GuzzleHttp\Client;
-use Invis1ble\MediaIntelligence\AudioExtractor\YtDlpAudioExtractor;
-use Invis1ble\MediaIntelligence\FactsExtractor\OpenAiChunkingFactsExtractor;
-use Invis1ble\MediaIntelligence\FactsExtractor\OpenAiFactsExtractor;
-use Invis1ble\MediaIntelligence\FactsExtractor\SimpleOpenAiTokenCounter;
-use Invis1ble\MediaIntelligence\SpeechToText\OpenAiSpeechToTextTransformer;
-use Invis1ble\MediaIntelligence\Tokenizer\ChunkTokenizer;
-use Invis1ble\MediaIntelligence\Tokenizer\SentenceTokenizer;
 use Invis1ble\MediaIntelligence\VideoToFacts\Application;
 
 // Set here your own OpenAI API Key.
@@ -67,22 +59,12 @@ use Invis1ble\MediaIntelligence\VideoToFacts\Application;
 $openAiApiKey = '';
 $audioTargetDirectoryPath = sys_get_temp_dir();
 
-$client = new Client();
-$tokenCounter = new SimpleOpenAiTokenCounter();
-
 $application = new Application(
-    audioExtractor: new YtDlpAudioExtractor(),
-    speechToTextTransformer: new OpenAiSpeechToTextTransformer($client, $openAiApiKey),
-    factsExtractor: new OpenAiChunkingFactsExtractor(
-        new OpenAiFactsExtractor($client, $tokenCounter, $openAiApiKey),
-        new ChunkTokenizer(new SentenceTokenizer(), $tokenCounter->tokensNumberToSizeInBytes(2048)),
-    ),
+    apiKey: $openAiApiKey,
     audioTargetDirectory: new SplFileInfo($audioTargetDirectoryPath),
 );
 
-
-// Usage: extract facts from the video
-$facts = $application->run('https://www.youtube.com/watch?v=1sRLDDIRL4U');
+$facts = $application->run('https://www.youtube.com/watch?v=JdMw9lQTNnc');
 /** @var iterable<string> $facts List of the extracted facts */
 
 foreach ($facts as $fact) {
@@ -117,31 +99,16 @@ $logger = new Logger(
     ],
 );
 
-$audioExtractor = new YtDlpAudioExtractor();
-$audioExtractor->setLogger($logger);
-
-$speechToTextTransformer = new OpenAiSpeechToTextTransformer($client, $openAiApiKey);
-$speechToTextTransformer->setLogger($logger);
-
-$tokenCounter = new SimpleOpenAiTokenCounter();
-$factsExtractor = new OpenAiFactsExtractor($client, $tokenCounter, $openAiApiKey);
-$factsExtractor->setLogger($logger);
-
-$sentenceTokenizer = new SentenceTokenizer();
-$sentenceTokenizer->setLogger($logger);
-
-$chunkTokenizer = new ChunkTokenizer($sentenceTokenizer, $tokenCounter->tokensNumberToSizeInBytes(2048));
-$chunkTokenizer->setLogger($logger);
-
-$chunkingFactsExtractor = new OpenAiChunkingFactsExtractor($factsExtractor, $chunkTokenizer);
-$chunkingFactsExtractor->setLogger($logger);
-
 $application = new Application(
-    audioExtractor: $audioExtractor,
-    speechToTextTransformer: $speechToTextTransformer,
-    factsExtractor: $chunkingFactsExtractor,
+    apiKey: $openAiApiKey,
     audioTargetDirectory: new SplFileInfo($audioTargetDirectoryPath),
+    debug: true,
 );
+
+$application->setLogger($logger);
+
+$facts = $application->run('https://www.youtube.com/watch?v=JdMw9lQTNnc');
+/** @var iterable<string> $facts List of the extracted facts */
 
 ```
 
