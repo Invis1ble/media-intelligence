@@ -18,8 +18,11 @@
     ],
     "require": {
         "php": ">=8.2",
-        "guzzlehttp/guzzle": "^7.5",
-        "psr/log": "^3.0@dev"
+        "psr/log": "^3.0@dev",
+        "psr/http-message": "^1.0@dev",
+        "psr/http-client": "^1.0@dev",
+        "psr/http-factory": "^1.0@dev",
+        "guzzlehttp/guzzle": "^7.5@dev"
     },
     "license": "MIT",
     "authors": [
