@@ -104,7 +104,7 @@ class OpenAiFactsExtractor implements FactsExtractor, LoggerAwareInterface
         $this->logger?->debug('Parsing facts from text: {text}', ['text' => $text]);
 
         $facts = array_map(
-            fn (string $line): string => preg_replace('/^[•-]\s*/u', '', $line),
+            fn (string $line): string => preg_replace('/^(?:[0-9]+\.|[•-])\s*/u', '', $line),
             explode("\n", preg_replace('/^\n\n/', '', $text)),
         );
 
